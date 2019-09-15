@@ -17,6 +17,7 @@ public class Main {
     private JFrame frame;
     private JPasswordField inputField;
     private JComboBox<SerialPort> portsComboBox;
+    private JButton refreshButton;
     private SerialPort chosenPort;
 
     private static final int WIDTH  = 400;
@@ -45,13 +46,16 @@ public class Main {
             @Override
             public void keyPressed(KeyEvent e) {
                 inputField.setText("");
-                System.out.println(e.getKeyCode());
-                System.out.println(e.getKeyLocation());
-                System.out.println(e.getKeyChar());
                 if(chosenPort != null && chosenPort.isOpen()) {
+                    System.out.println(e.getKeyCode());
+                    System.out.println(e.getKeyLocation());
+                    System.out.println(e.getKeyChar());
                     ByteBuffer bb = ByteBuffer.allocate(4);
                     bb.putInt(e.getKeyCode());
                     chosenPort.writeBytes(bb.array(), 1);
+                } else {
+                    stopCommunication();
+                    refreshPortComboBox();
                 }
             }
 
@@ -63,11 +67,13 @@ public class Main {
 
 
         JLabel comText = new JLabel("<html><div style=\"text-align: justify;\" >Choose the COM port corresponding to the device</div></html>");
-        JButton refreshButton = new JButton ("REFRESH");
+        refreshButton = new JButton ("REFRESH");
         refreshButton.addMouseListener(new MouseListener() {
             @Override
             public void mouseClicked(MouseEvent e) {
+                refreshButton.setEnabled(false);
                 refreshPortComboBox();
+                refreshButton.setEnabled(true);
             }
 
             @Override
@@ -88,6 +94,16 @@ public class Main {
         });
 
         portsComboBox = new JComboBox<>();
+        portsComboBox.addItemListener(e -> {
+            if ((e.getStateChange() == ItemEvent.SELECTED)) {
+                SerialPort port = null;
+                try { port = (SerialPort) e.getItem(); } catch (Exception ignored) {}
+
+                if(port != null) {
+                    startCommunication(port);
+                }
+            }
+        });
         refreshPortComboBox();
 
         JPanel bottomButtons = new JPanel(new BorderLayout(10, 10));
@@ -126,51 +142,53 @@ public class Main {
     }
 
     private void refreshPortComboBox() {
-        ActionListener listener = e -> {
-            if (chosenPort != null) {
-                chosenPort.closePort();
-                chosenPort = null; // force the garbage collector to destroy it
-            }
-            chosenPort = (SerialPort) portsComboBox.getSelectedItem();
-            if(chosenPort != null) {
-                // System.out.println(chosenPort.getDescriptivePortName());
-                System.out.println(chosenPort.getSystemPortName());
-                chosenPort.openPort();
-                chosenPort.addDataListener(new SerialPortDataListener() {
-                    @Override
-                    public int getListeningEvents() { return SerialPort.LISTENING_EVENT_DATA_AVAILABLE; }
-                    @Override
-                    public void serialEvent(SerialPortEvent event)
-                    {
-                        if (event.getEventType() != SerialPort.LISTENING_EVENT_DATA_AVAILABLE)
-                            return;
-                        if(chosenPort.bytesAvailable() > 0) {
-                            byte[] newData = new byte[chosenPort.bytesAvailable()];
-                            int numRead = chosenPort.readBytes(newData, newData.length);
-                            for (byte b : newData) {
-                                char c = (char) b;
-                                if(c != '\n') {
-                                    System.out.print(c);
-                                }
-                            }
-                            System.out.println();
-                            System.out.println("Read " + numRead + " bytes.");
-                        }
-                    }
-                });
-            }
-        };
         SerialPort[] ports = SerialPort.getCommPorts();
-        if(ports.length != 0) {
-            portsComboBox.removeAllItems();
-            for(SerialPort p : ports) {
-                portsComboBox.addItem(p);
-            }
-            portsComboBox.addActionListener(listener);
-            portsComboBox.setEnabled(true);
-        } else {
-            portsComboBox.removeActionListener(listener);
-            portsComboBox.setEnabled(false);
+        portsComboBox.removeAllItems();
+        for(SerialPort p : ports) {
+            portsComboBox.addItem(p);
+        }
+        if(ports.length == 0) {
+            stopCommunication();
+        }
+    }
+
+    private void stopCommunication() {
+        if (chosenPort != null) {
+            chosenPort.closePort();
+            chosenPort = null; // force the garbage collector to destroy it
+        }
+    }
+
+    private void startCommunication(SerialPort port) {
+        if(chosenPort == null || (port != null && !chosenPort.getDescriptivePortName().equals(port.getDescriptivePortName()))) {
+            stopCommunication();
+
+            chosenPort = port;
+            // System.out.println(chosenPort.getDescriptivePortName());
+            System.out.println(chosenPort.getSystemPortName());
+            chosenPort.openPort();
+            chosenPort.addDataListener(new SerialPortDataListener() {
+                @Override
+                public int getListeningEvents() { return SerialPort.LISTENING_EVENT_DATA_AVAILABLE; }
+                @Override
+                public void serialEvent(SerialPortEvent event)
+                {
+                    if (event.getEventType() != SerialPort.LISTENING_EVENT_DATA_AVAILABLE)
+                        return;
+                    if(chosenPort.bytesAvailable() > 0) {
+                        byte[] newData = new byte[chosenPort.bytesAvailable()];
+                        int numRead = chosenPort.readBytes(newData, newData.length);
+                        for (byte b : newData) {
+                            char c = (char) b;
+                            if(c != '\n') {
+                                System.out.print(c);
+                            }
+                        }
+                        System.out.println();
+                        System.out.println("Read " + numRead + " bytes.");
+                    }
+                }
+            });
         }
     }
 }
