@@ -7,15 +7,35 @@ import mdlaf.utils.MaterialFontFactory;
 import mdlaf.utils.MaterialImageFactory;
 
 import javax.swing.*;
+import javax.swing.border.Border;
 import javax.swing.border.MatteBorder;
 import javax.swing.plaf.BorderUIResource;
 import javax.swing.plaf.ColorUIResource;
 import javax.swing.plaf.InsetsUIResource;
 import java.awt.*;
 
+@SuppressWarnings("WeakerAccess")
 public class MaterialDarkTheme extends AbstractMaterialTheme {
 
     private static final ColorUIResource BACKGROUND_COLOR = MaterialColors.GRAY_900;
+    private static final ColorUIResource TRANSPARENT = new ColorUIResource(new Color(0, 0, 0, 0));
+    public static final Color HIGHLIGHT_COLOR = MaterialColors.RED_A400;
+    public static final Color HIGHLIGHT_HOVER = HIGHLIGHT_COLOR.darker();
+    public static final ColorUIResource HIGHLIGHT_HOVER_COLOR = new ColorUIResource(HIGHLIGHT_HOVER);
+
+    public static Border getInputFieldFocusedBorder() {
+        return new MatteBorder(0, 0, 3, 0, HIGHLIGHT_HOVER);
+    }
+    public static Border getInputFieldUnfocusedBorder() {
+        return new MatteBorder(0, 0, 3, 0, HIGHLIGHT_COLOR);
+    }
+
+    public static Border getButtonFocusedBorder() {
+        return BorderFactory.createCompoundBorder( new MatteBorder(3, 3, 3, 3, HIGHLIGHT_HOVER), BorderFactory.createEmptyBorder(5, 9, 5, 9));
+    }
+    public static Border getButtonUnfocusedBorder() {
+        return BorderFactory.createEmptyBorder(8, 12, 8, 12);
+    }
 
     MaterialDarkTheme() {
     }
@@ -24,8 +44,11 @@ public class MaterialDarkTheme extends AbstractMaterialTheme {
     public void installUIDefault(UIDefaults table) {
         super.installUIDefault(table);
 
-        table.put("ComboBox.unfocusColor", BACKGROUND_COLOR);
-        table.put("ComboBox.focusColor", BACKGROUND_COLOR);
+        //noinspection SpellCheckingInspection
+        table.put("ComboBox.unfocusColor", TRANSPARENT);
+        table.put("ComboBox.focusColor", TRANSPARENT);
+        table.put("Button[border].enable", false);
+        table.put("Button[focus].color", TRANSPARENT);
     }
 
     public void installTheme() {
@@ -72,7 +95,7 @@ public class MaterialDarkTheme extends AbstractMaterialTheme {
     @Override
     protected void installBorders() {
         super.installBorders();
-        this.buttonBorder = new BorderUIResource(BorderFactory.createEmptyBorder(8, 12, 8, 12));
+        this.buttonBorder = new BorderUIResource(getButtonUnfocusedBorder());
         this.borderMenu = new BorderUIResource(BorderFactory.createEmptyBorder(5, 5, 5, 5));
         this.borderMenuBar = MaterialBorders.LIGHT_SHADOW_BORDER;
         this.borderPopupMenu = MaterialBorders.LIGHT_LINE_BORDER;
@@ -83,7 +106,7 @@ public class MaterialDarkTheme extends AbstractMaterialTheme {
         this.borderSlider = new BorderUIResource(BorderFactory.createEmptyBorder());
         this.cellBorderTableHeader = new BorderUIResource(BorderFactory.createCompoundBorder(MaterialBorders.LIGHT_LINE_BORDER, BorderFactory.createEmptyBorder(5, 5, 5, 5)));
         this.borderToolBar = new BorderUIResource(BorderFactory.createEmptyBorder());
-        this.borderTextField = new BorderUIResource(new MatteBorder(0, 0, 3, 0, new Color(MaterialColors.RED_A400.getRGB())));
+        this.borderTextField = new BorderUIResource(getInputFieldUnfocusedBorder());
         this.borderTaskPane = this.borderPanel;
         this.focusCellHighlightBorder = new BorderUIResource(BorderFactory.createEmptyBorder());
         this.borderComboBox = new BorderUIResource(BorderFactory.createEmptyBorder());
@@ -97,14 +120,14 @@ public class MaterialDarkTheme extends AbstractMaterialTheme {
 
     protected void installColor() {
         this.backgroundPrimary = BACKGROUND_COLOR;
-        this.highlightBackgroundPrimary = MaterialColors.RED_A400;
+        this.highlightBackgroundPrimary = new ColorUIResource(HIGHLIGHT_COLOR);
         this.textColor = MaterialColors.WHITE;
         this.disableTextColor = MaterialColors.GRAY_500;
         this.buttonBackgroundColor = this.highlightBackgroundPrimary;
-        this.buttonBackgroundColorMouseHover = new ColorUIResource(this.highlightBackgroundPrimary.darker());
+        this.buttonBackgroundColorMouseHover = HIGHLIGHT_HOVER_COLOR;
         this.buttonTextColor = MaterialColors.WHITE;
         this.buttonDefaultBackgroundColorMouseHover = MaterialColors.RED_200;
-        this.buttonDefaultBackgroundColor = MaterialColors.RED_A200;
+        this.buttonDefaultBackgroundColor = this.buttonBackgroundColor;
         this.buttonDefaultTextColor = MaterialColors.BLACK;
         this.buttonDisabledBackground = MaterialColors.COSMO_DARK_GRAY;
         this.buttonDisabledForeground = MaterialColors.BLACK;

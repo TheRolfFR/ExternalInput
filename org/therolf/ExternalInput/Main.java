@@ -23,6 +23,7 @@ public class Main {
     private static final int WIDTH  = 400;
     private static final int HEIGHT = 320;
 
+    @SuppressWarnings("WeakerAccess")
     public Main() {
 
         frame = new JFrame ("ExternalInput");
@@ -37,6 +38,17 @@ public class Main {
 
         inputField = new JPasswordField();
         inputField.setHorizontalAlignment(SwingConstants.CENTER);
+        inputField.addFocusListener(new FocusListener() {
+            @Override
+            public void focusGained(FocusEvent e) {
+                inputField.setBorder(MaterialDarkTheme.getInputFieldFocusedBorder());
+            }
+
+            @Override
+            public void focusLost(FocusEvent e) {
+                inputField.setBorder(MaterialDarkTheme.getInputFieldUnfocusedBorder());
+            }
+        });
         inputField.addKeyListener(new KeyListener() {
 
             @Override
@@ -90,6 +102,17 @@ public class Main {
 
             @Override
             public void mouseExited(MouseEvent e) {
+            }
+        });
+        refreshButton.addFocusListener(new FocusListener() {
+            @Override
+            public void focusGained(FocusEvent e) {
+                refreshButton.setBorder(MaterialDarkTheme.getButtonFocusedBorder());
+            }
+
+            @Override
+            public void focusLost(FocusEvent e) {
+                refreshButton.setBorder(MaterialDarkTheme.getButtonUnfocusedBorder());
             }
         });
 
