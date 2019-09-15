@@ -15,7 +15,17 @@ import java.awt.*;
 
 public class MaterialDarkTheme extends AbstractMaterialTheme {
 
+    private static final ColorUIResource BACKGROUND_COLOR = MaterialColors.GRAY_900;
+
     MaterialDarkTheme() {
+    }
+
+    @Override
+    public void installUIDefault(UIDefaults table) {
+        super.installUIDefault(table);
+
+        table.put("ComboBox.unfocusColor", BACKGROUND_COLOR);
+        table.put("ComboBox.focusColor", BACKGROUND_COLOR);
     }
 
     public void installTheme() {
@@ -86,7 +96,7 @@ public class MaterialDarkTheme extends AbstractMaterialTheme {
     }
 
     protected void installColor() {
-        this.backgroundPrimary = MaterialColors.GRAY_900;
+        this.backgroundPrimary = BACKGROUND_COLOR;
         this.highlightBackgroundPrimary = MaterialColors.RED_A400;
         this.textColor = MaterialColors.WHITE;
         this.disableTextColor = MaterialColors.GRAY_500;
@@ -98,19 +108,19 @@ public class MaterialDarkTheme extends AbstractMaterialTheme {
         this.buttonDefaultTextColor = MaterialColors.BLACK;
         this.buttonDisabledBackground = MaterialColors.COSMO_DARK_GRAY;
         this.buttonDisabledForeground = MaterialColors.BLACK;
-        this.buttonFocusColor = MaterialColors.RED_A400;
+        this.buttonFocusColor = MaterialColors.GREEN_50;
         this.buttonDefaultFocusColor = MaterialColors.BLACK;
         this.buttonBorderColor = this.buttonBackgroundColor;
         this.buttonColorHighlight = MaterialColors.GRAY_400;
         this.selectedInDropDownBackgroundComboBox = MaterialColors.RED_A400;
         this.selectedForegroundComboBox = MaterialColors.WHITE;
-        this.menuBackground = MaterialColors.GRAY_900;
+        this.menuBackground = BACKGROUND_COLOR;
         this.menuBackgroundMouseHover = MaterialColors.GRAY_800;
         this.menuTextColor = MaterialColors.WHITE;
         this.menuDisableBackground = MaterialColors.TRANSPANENT;
-        this.arrowButtonBackgroundSpinner = MaterialColors.GRAY_900;
+        this.arrowButtonBackgroundSpinner = BACKGROUND_COLOR;
         this.mouseHoverButtonColorSpinner = MaterialColors.GRAY_800;
-        this.arrowButtonColorScrollBar = MaterialColors.GRAY_900;
+        this.arrowButtonColorScrollBar = BACKGROUND_COLOR;
         this.trackColorScrollBar = MaterialColors.GRAY_800;
         this.thumbColorScrollBar = MaterialColors.GRAY_500;
         this.thumbDarkShadowColorScrollBar = MaterialColors.GRAY_500;
@@ -120,12 +130,12 @@ public class MaterialDarkTheme extends AbstractMaterialTheme {
         this.mouseHoverColorScrollBar = MaterialColors.GRAY_300;
         this.trackColorSlider = MaterialColors.GRAY_800;
         this.haloColorSlider = MaterialColors.bleach(MaterialColors.RED_A200, 0.5F);
-        this.highlightColorTabbedPane = MaterialColors.GRAY_900;
-        this.borderHighlightColorTabbedPane = MaterialColors.GRAY_900;
+        this.highlightColorTabbedPane = BACKGROUND_COLOR;
+        this.borderHighlightColorTabbedPane = BACKGROUND_COLOR;
         this.focusColorLineTabbedPane = MaterialColors.RED_A400;
         this.disableColorTabTabbedPane = MaterialColors.COSMO_STRONG_GRAY;
         this.backgroundTable = MaterialColors.GRAY_800;
-        this.backgroundTableHeader = MaterialColors.GRAY_900;
+        this.backgroundTableHeader = BACKGROUND_COLOR;
         this.foregroundTable = MaterialColors.WHITE;
         this.foregroundTableHeader = MaterialColors.RED_A400;
         this.selectionBackgroundTable = MaterialColors.RED_A100;
@@ -136,7 +146,7 @@ public class MaterialDarkTheme extends AbstractMaterialTheme {
         this.floatingBackgroundToolBar = MaterialColors.GRAY_200;
         this.selectionBackgroundTree = MaterialColors.GRAY_800;
         this.selectionBorderColorTree = MaterialColors.RED_A400;
-        this.backgroundTextField = new ColorUIResource(MaterialColors.GRAY_900.brighter());
+        this.backgroundTextField = new ColorUIResource(BACKGROUND_COLOR.brighter());
         this.inactiveForegroundTextField = MaterialColors.WHITE;
         this.inactiveBackgroundTextField = this.backgroundTextField;
         this.selectionBackgroundTextField = MaterialColors.RED_A100;
@@ -147,9 +157,9 @@ public class MaterialDarkTheme extends AbstractMaterialTheme {
         this.titleBackgroundGradientEndTaskPane = MaterialColors.GRAY_500;
         this.titleOverTaskPane = MaterialColors.WHITE;
         this.specialTitleOverTaskPane = MaterialColors.WHITE;
-        this.backgroundTaskPane = MaterialColors.GRAY_900;
-        this.borderColorTaskPane = MaterialColors.GRAY_900;
-        this.contentBackgroundTaskPane = MaterialColors.GRAY_900;
+        this.backgroundTaskPane = BACKGROUND_COLOR;
+        this.borderColorTaskPane = BACKGROUND_COLOR;
+        this.contentBackgroundTaskPane = BACKGROUND_COLOR;
         this.selectionBackgroundList = MaterialColors.GRAY_800;
         this.selectionForegroundList = MaterialColors.WHITE;
         this.backgroundProgressBar = this.backgroundTextField;
